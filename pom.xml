@@ -14,10 +14,8 @@
 
 	<modules>
 		<module>utils-serialize</module>
-		<module>utils-web</module>
 		<module>utils-web-server</module>
 		<module>utils-common</module>
-		<module>utils-http</module>
 		<module>utils-test</module>
 	</modules>
 
