@@ -5,28 +5,26 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-/**
- * @Author zhaogw date 2018/11/26 20:46
- */
 public class StringUtils {
 
 	public static final String[] EMPTY_ARRAY = {};
+	
+	private static Pattern NUMBER_PATTERN = Pattern.compile("^[-\\+]?[\\d]*$");
 
-	public static boolean isEmpty(Object str) {
-		return str == null || "".equals(str);
+	public static boolean isEmpty(String str) {
+		return str == null || str.length() == 0;
+	}
+	
+	public static boolean isBlank(String str) {
+		return str == null || str.length() == 0 || str.trim().length() == 0;
 	}
 
-	/*
-	 * 判断是否为整数
-	 * 
-	 * @param str 传入的字符串
-	 * 
-	 * @return 是整数返回true,否则返回false
+	/**
+	 * @param str
+	 * @return
 	 */
-
 	public static boolean isNumber(String str) {
-		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-		return pattern.matcher(str).matches();
+		return NUMBER_PATTERN.matcher(str).matches();
 	}
 
 	/**
