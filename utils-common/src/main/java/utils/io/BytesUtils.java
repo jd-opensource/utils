@@ -704,6 +704,22 @@ public class BytesUtils {
 		
 		return bytesAll;
 	}
+	
+	public static char[] concat(char[]... bytesList) {
+		int size = 0;
+		for (char[] bs : bytesList) {
+			size += bs.length;
+		}
+		char[] bytesAll = new char[size];
+		size = 0;
+		for (char[] bs : bytesList) {
+			System.arraycopy(bs, 0, bytesAll, size, bs.length);
+			size += bs.length;
+		}
+		
+		return bytesAll;
+	}
+
 
 	public static long toLong(ByteArray byteArray) {
 		return toLong(byteArray.bytes());
