@@ -14,9 +14,12 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>utils-common</module>
+		<module>utils-crypto-base</module>
+		<module>utils-crypto-classic</module>
+		<module>utils-crypto-sm</module>
 		<module>utils-serialize</module>
 		<module>utils-web-server</module>
-		<module>utils-common</module>
 		<module>utils-test</module>
 	</modules>
 
