@@ -59,16 +59,20 @@ public abstract class HashBaseSecureRandom extends SecureRandom {
 
 	@Override
 	public synchronized void nextBytes(byte[] bytes) {
+		nextBytes(bytes, 0, bytes.length);
+	}
+	
+	public synchronized void nextBytes(byte[] bytes, int offset, int length) {
 		// 用随机数填充数组；
-		int left = bytes.length;
-		int offset = 0;
+		int left = length;
+		int pos = offset;
 		while (left > 0) {
 			if (availableSize == 0) {
 				nextState();
 			}
 			int copySize = Math.min(left, availableSize);
-			System.arraycopy(output, HASH_SIZE - availableSize, bytes, offset, copySize);
-			offset += copySize;
+			System.arraycopy(output, HASH_SIZE - availableSize, bytes, pos, copySize);
+			pos += copySize;
 			left -= copySize;
 			availableSize -= copySize;
 		}
