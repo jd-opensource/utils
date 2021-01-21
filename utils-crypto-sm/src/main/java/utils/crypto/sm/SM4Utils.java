@@ -17,9 +17,9 @@ import utils.security.EncryptionException;
 public class SM4Utils {
 
 	// SM4 supports 128-bit(16 bytes) secret key
-	private static final int KEY_SIZE = 128 / 8;
+	public static final int KEY_SIZE = 128 / 8;
 	// One block contains 16 bytes
-	private static final int BLOCK_SIZE = 16;
+	public static final int BLOCK_SIZE = 16;
 	// Initial vector's size is 16 bytes
 	public static final int IV_SIZE = 16;
 
