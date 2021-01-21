@@ -35,14 +35,14 @@ public class SM2Utils {
 
 	public static final int PRIVKEY_SIZE = 32;
 
-	private static final int COORDS_SIZE = 32;
-	private static final int POINT_SIZE = COORDS_SIZE * 2 + 1;
+	public static final int COORDS_SIZE = 32;
+	public static final int POINT_SIZE = COORDS_SIZE * 2 + 1;
 
 	public static final int R_SIZE = 32;
 	public static final int S_SIZE = 32;
 
 	// The length of sm3 output is 32 bytes
-	private static final int SM3DIGEST_LENGTH = 32;
+	public static final int SM3DIGEST_LENGTH = SM3Utils.SM3DIGEST_LENGTH;
 
 	private static final ECNamedCurveParameterSpec PARAMS = ECNamedCurveTable.getParameterSpec("sm2p256v1");
 	private static final ECCurve CURVE = PARAMS.getCurve();
@@ -300,7 +300,7 @@ public class SM2Utils {
 		// To generate the twisted ciphertext c1c2c3.
 		// The latest standard specification indicates that the correct ordering is
 		// c1c3c2
-		byte[] c1c2c3 = new byte[0];
+		byte[] c1c2c3;
 		try {
 			c1c2c3 = encryptor.processBlock(plainBytes, offset, length);
 		} catch (InvalidCipherTextException e) {
