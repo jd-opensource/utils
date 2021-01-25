@@ -298,6 +298,9 @@ public class BytesUtils {
 	}
 
 	public static byte[] toBytes(String str, String charset) {
+		if(null == str) {
+			return null;
+		}
 		try {
 			byte[] bytes = str.getBytes(charset);
 			return bytes;
