@@ -181,7 +181,7 @@ public class BytesUtils {
 	/**
 	 * 将 int 值转为4字节的二进制数组；
 	 * <p>
-	 * 以“高位在前”的方式转换，即：数值的高位保存在数组地址的低位；
+	 * 以“高位在前”的方式转换，即：数值的高位保存在数组地址的低位（Big Endian 模式）；
 	 * 
 	 * @param value  要转换的int整数；
 	 * @param bytes  要保存转换结果的二进制数组；转换结果将从高位至低位的顺序写入数组从 offset 指定位置开始的4个元素；
@@ -189,17 +189,49 @@ public class BytesUtils {
 	 * @return 返回写入的长度；
 	 */
 	public static int toBytes(int value, byte[] bytes, int offset) {
+		return toBytes_BigEndian(value, bytes, offset);
+	}
+
+	/**
+	 * 将 int 值转为4字节的二进制数组；
+	 * <p>
+	 * 以“高位在前”的方式转换，即：数值的高位保存在数组地址的低位（Big Endian 模式）；
+	 * 
+	 * @param value  要转换的int整数；
+	 * @param bytes  要保存转换结果的二进制数组；转换结果将从高位至低位的顺序写入数组从 offset 指定位置开始的4个元素；
+	 * @param offset 写入转换结果的起始位置；
+	 * @return 返回写入的长度；
+	 */
+	public static int toBytes_BigEndian(int value, byte[] bytes, int offset) {
 		bytes[offset] = (byte) ((value >>> 24) & 0x00FF);
 		bytes[offset + 1] = (byte) ((value >>> 16) & 0x00FF);
 		bytes[offset + 2] = (byte) ((value >>> 8) & 0x00FF);
 		bytes[offset + 3] = (byte) (value & 0x00FF);
 		return 4;
 	}
+	
 
 	/**
 	 * 将 int 值转为4字节的二进制数组；
 	 * <p>
-	 * 以“高位在后”的方式转换，即：数值的高位保存在数组地址的高位；
+	 * 以“高位在后”的方式转换，即：数值的高位保存在数组地址的高位（Little Endian 模式）；
+	 * 
+	 * @param value  要转换的int整数；
+	 * @param bytes  要保存转换结果的二进制数组；转换结果将从高位至低位的顺序写入数组从 offset 指定位置开始的4个元素；
+	 * @param offset 写入转换结果的起始位置；
+	 * @return 返回写入的长度；
+	 */
+	public static int toBytes_LittleEndian(int value, byte[] bytes, int offset) {
+		bytes[offset] = (byte) (value & 0x00FF);
+		bytes[offset + 1] = (byte) ((value >>> 8) & 0x00FF);
+		bytes[offset + 2] = (byte) ((value >>> 16) & 0x00FF);
+		bytes[offset + 3] = (byte) ((value >>> 24) & 0x00FF);
+		return 4;
+	}
+	/**
+	 * 将 int 值转为4字节的二进制数组；
+	 * <p>
+	 * 以“高位在后”的方式转换，即：数值的高位保存在数组地址的高位（Little Endian 模式）；
 	 * 
 	 * @param value  要转换的int整数；
 	 * @param bytes  要保存转换结果的二进制数组；转换结果将从高位至低位的顺序写入数组从 offset 指定位置开始的4个元素；
@@ -207,11 +239,7 @@ public class BytesUtils {
 	 * @return 返回写入的长度；
 	 */
 	public static int toBytesInReverse(int value, byte[] bytes, int offset) {
-		bytes[offset] = (byte) (value & 0x00FF);
-		bytes[offset + 1] = (byte) ((value >>> 8) & 0x00FF);
-		bytes[offset + 2] = (byte) ((value >>> 16) & 0x00FF);
-		bytes[offset + 3] = (byte) ((value >>> 24) & 0x00FF);
-		return 4;
+		return toBytes_LittleEndian(value, bytes, offset);
 	}
 
 	/**
