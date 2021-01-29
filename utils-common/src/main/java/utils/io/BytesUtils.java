@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.bouncycastle.util.Arrays;
+
 import utils.ByteSequence;
 import utils.Bytes;
 import utils.IllegalDataException;
@@ -37,11 +39,11 @@ public class BytesUtils {
 	 * 比较指定的两个字节数组是否一致；
 	 * <p>
 	 * 
-	 * 此方法不处理两者其中之一为 null 的情形，因为无法定义相等性，所以将引发 {@link NullPointerException} 异常；
+	 * 注：要比较的两个数组的长度都为 0 时总是返回 true;
 	 * 
-	 * @param bytes1 bytes1
-	 * @param bytes2 bytes2
-	 * @return boolean
+	 * @param bytes1 要比较的数组1；
+	 * @param bytes2 要比较的数组2；
+	 * @return boolean 
 	 */
 	public static boolean equals(byte[] bytes1, byte[] bytes2) {
 		if (bytes1 == bytes2) {
@@ -59,6 +61,40 @@ public class BytesUtils {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 验证两个数组中，从指定偏移开始的相同长度的数据是否相等；<p>
+	 * 
+	 * 注：<br>
+	 * 要比较的两个数组中任意一个的有效长度不满足指定的长度时，返回 false；
+	 * 
+	 * @param bytes1  要比较的数组1；
+	 * @param offset1 数组1的起始偏移量；
+	 * @param bytes2  要比较的数组2；
+	 * @param offset2 数组2的起始偏移量；
+	 * @param length  要比较的数据的长度； 在有效的偏移量前提下，当指定长度为 0 时，总是返回 true;
+	 * @return
+	 */
+	public static boolean equals(byte[] bytes1, int offset1, byte[] bytes2, int offset2, int length) {
+		if (bytes1 == bytes2) {
+			return true;
+		}
+		if (bytes1 == null || bytes2 == null) {
+			return false;
+		}
+		
+		//验证两个数组的有效长度；
+		if (bytes1.length >= (offset1 + length) && bytes2.length >= (offset2 + length)) {
+			for (int i = 0; i < length; i++) {
+				if (bytes1[offset1 + i] != bytes2[offset2 + i]) {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		return false;
 	}
 
 	public static byte[] toBytes(BytesWriter bytesWriter) {
@@ -209,7 +245,6 @@ public class BytesUtils {
 		bytes[offset + 3] = (byte) (value & 0x00FF);
 		return 4;
 	}
-	
 
 	/**
 	 * 将 int 值转为4字节的二进制数组；
@@ -228,6 +263,7 @@ public class BytesUtils {
 		bytes[offset + 3] = (byte) ((value >>> 24) & 0x00FF);
 		return 4;
 	}
+
 	/**
 	 * 将 int 值转为4字节的二进制数组；
 	 * <p>
@@ -279,6 +315,11 @@ public class BytesUtils {
 		bytes[offset] = (byte) ((value >>> 8) & 0x00FF);
 		bytes[offset + 1] = (byte) (value & 0x00FF);
 	}
+	
+	public static void toBytes_BigEndian(short value, byte[] bytes, int offset) {
+		bytes[offset] = (byte) ((value >>> 8) & 0x00FF);
+		bytes[offset + 1] = (byte) (value & 0x00FF);
+	}
 
 	public static void toBytes(char value, byte[] bytes, int offset) {
 		bytes[offset] = (byte) ((value >>> 8) & 0x00FF);
@@ -326,7 +367,7 @@ public class BytesUtils {
 	}
 
 	public static byte[] toBytes(String str, String charset) {
-		if(null == str) {
+		if (null == str) {
 			return null;
 		}
 		try {
@@ -704,38 +745,38 @@ public class BytesUtils {
 
 		return bytesAll;
 	}
-	
+
 	public static byte[] concat(Bytes... bytesList) {
 		int size = 0;
 		for (Bytes bs : bytesList) {
 			size += bs.size();
 		}
-		
+
 		byte[] bytesAll = new byte[size];
 		size = 0;
 		for (Bytes bs : bytesList) {
 			bs.copyTo(bytesAll, size, bs.size());
 			size += bs.size();
 		}
-		
+
 		return bytesAll;
 	}
-	
+
 	public static byte[] concat(ByteSequence... bytesList) {
 		int size = 0;
 		for (ByteSequence bs : bytesList) {
 			size += bs.size();
 		}
-		
+
 		byte[] bytesAll = new byte[size];
 		size = 0;
 		for (ByteSequence bs : bytesList) {
 			size += bs.copyTo(bytesAll, size, bs.size());
 		}
-		
+
 		return bytesAll;
 	}
-	
+
 	public static char[] concat(char[]... bytesList) {
 		int size = 0;
 		for (char[] bs : bytesList) {
@@ -747,10 +788,9 @@ public class BytesUtils {
 			System.arraycopy(bs, 0, bytesAll, size, bs.length);
 			size += bs.length;
 		}
-		
+
 		return bytesAll;
 	}
-
 
 	public static long toLong(ByteArray byteArray) {
 		return toLong(byteArray.bytes());

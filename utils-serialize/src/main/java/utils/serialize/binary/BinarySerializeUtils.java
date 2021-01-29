@@ -41,6 +41,14 @@ public class BinarySerializeUtils {
 		ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 		return deserialize(in);
 	}
+	
+	public static <T> T deserialize(byte[] bytes, int offset, int length) {
+		if (bytes == null || bytes.length == 0) {
+			return null;
+		}
+		ByteArrayInputStream in = new ByteArrayInputStream(bytes, offset, length);
+		return deserialize(in);
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T deserialize(InputStream in) {
