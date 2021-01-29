@@ -43,7 +43,7 @@ public class BytesUtils {
 	 * 
 	 * @param bytes1 要比较的数组1；
 	 * @param bytes2 要比较的数组2；
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public static boolean equals(byte[] bytes1, byte[] bytes2) {
 		if (bytes1 == bytes2) {
@@ -64,7 +64,8 @@ public class BytesUtils {
 	}
 
 	/**
-	 * 验证两个数组中，从指定偏移开始的相同长度的数据是否相等；<p>
+	 * 验证两个数组中，从指定偏移开始的相同长度的数据是否相等；
+	 * <p>
 	 * 
 	 * 注：<br>
 	 * 要比较的两个数组中任意一个的有效长度不满足指定的长度时，返回 false；
@@ -83,8 +84,8 @@ public class BytesUtils {
 		if (bytes1 == null || bytes2 == null) {
 			return false;
 		}
-		
-		//验证两个数组的有效长度；
+
+		// 验证两个数组的有效长度；
 		if (bytes1.length >= (offset1 + length) && bytes2.length >= (offset2 + length)) {
 			for (int i = 0; i < length; i++) {
 				if (bytes1[offset1 + i] != bytes2[offset2 + i]) {
@@ -93,7 +94,7 @@ public class BytesUtils {
 			}
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -315,7 +316,7 @@ public class BytesUtils {
 		bytes[offset] = (byte) ((value >>> 8) & 0x00FF);
 		bytes[offset + 1] = (byte) (value & 0x00FF);
 	}
-	
+
 	public static void toBytes_BigEndian(short value, byte[] bytes, int offset) {
 		bytes[offset] = (byte) ((value >>> 8) & 0x00FF);
 		bytes[offset + 1] = (byte) (value & 0x00FF);
@@ -633,15 +634,14 @@ public class BytesUtils {
 	public static int readInt(InputStream in) {
 		try {
 			int value = 0;
-			int v;
-			for (int i = 0; i < 4; i++) {
-				v = in.read();
-				if (v < 0) {
-					throw new IllegalDataException(
-							"No enough data to read as integer from the specified input stream!");
-				}
-				value = value | ((v & 0xFF) << (8 * (3 - i)));
+			int v0 = in.read();
+			int v1 = in.read();
+			int v2 = in.read();
+			int v3 = in.read();
+			if (v0 < 0 || v1 < 0 || v2 < 0 || v3 < 0) {
+				throw new IllegalDataException("No enough data to read as integer from the specified input stream!");
 			}
+			value = (v0 << 24) | (v1 << 16) | (v2 << 8) | v3;
 			return value;
 		} catch (IOException e) {
 			throw new RuntimeIOException(e.getMessage(), e);
