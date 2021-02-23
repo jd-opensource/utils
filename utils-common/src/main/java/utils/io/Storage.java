@@ -49,6 +49,13 @@ public interface Storage {
 	
 	void writeProperties(String name, Properties props);
 
+	/**
+	 * 获取键列表
+	 *
+	 * @return
+	 */
+	String[] getKeyNames();
+
 	default int readInt(String name) {
 		return readInt(name, 0);
 	}
