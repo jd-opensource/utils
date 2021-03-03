@@ -1,7 +1,5 @@
 package utils;
 
-import java.io.OutputStream;
-
 /**
  * A readable sequence of byte value;
  * 
@@ -24,6 +22,22 @@ public interface ByteSequence {
 	 * @return
 	 */
 	byte byteAt(int index);
+
+	/**
+	 * 比较当前字节与指定的字节数组是否相等；
+	 * @param data
+	 */
+	default boolean equal(byte[] data) {
+		if (data.length != size()) {
+			return false;
+		}
+		for (int i = 0; i < data.length; i++) {
+			if (data[i] != byteAt(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Returns a {@link ByteSequence} that is a subsequence of this sequence.

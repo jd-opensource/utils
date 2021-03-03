@@ -422,6 +422,25 @@ public class Bytes implements ByteSequence, BytesSerializable, Serializable {
 	public byte byteAt(int index) {
 		return read(index);
 	}
+	
+	@Override
+	public boolean equal(byte[] data) {
+		if (data.length != size()) {
+			return false;
+		}
+		int i = 0;
+		for (; i < prefixSize; i++) {
+			if (prefix.read(i) != data[i]) {
+				return false;
+			}
+		}
+		for (int j = 0; j < bytes.length; i++, j++) {
+			if (bytes[j] != data[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public ByteSequence subSequence(int start, int end) {

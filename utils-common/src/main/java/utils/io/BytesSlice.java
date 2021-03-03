@@ -229,6 +229,19 @@ public class BytesSlice implements ByteSequence, BytesSerializable {
 	public byte byteAt(int index) {
 		return getByte(index);
 	}
+	
+	@Override
+	public boolean equal(byte[] data) {
+		if (data.length != size()) {
+			return false;
+		}
+		for (int i = 0; i < data.length; i++) {
+			if (data[i] != bytes[dataOffset + i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public ByteSequence subSequence(int start, int end) {

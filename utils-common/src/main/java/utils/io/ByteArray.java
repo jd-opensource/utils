@@ -327,6 +327,11 @@ public class ByteArray implements Externalizable, ByteSequence {
 	public byte byteAt(int index) {
 		return bytes[index];
 	}
+	
+	@Override
+	public boolean equal(byte[] data) {
+		return Arrays.equals(bytes, data);
+	}
 
 	@Override
 	public ByteSequence subSequence(int start, int end) {
