@@ -131,6 +131,16 @@ public class FileSystemStorage implements Storage {
 		FileUtils.writeProperties(props, dataFile);
 	}
 
+	@Override
+	public String[] getKeyNames() {
+		File[] dirs = root.listFiles(pathname -> pathname.isFile());
+		String[] dataNames = new String[dirs.length];
+		for (int i = 0; i < dataNames.length; i++) {
+			dataNames[i] = dirs[i].getName().substring(DATA_PREFIX.length());
+		}
+		return dataNames;
+	}
+
 	private File getDataFile(String name) {
 		checkName(name);
 		String dataName = formatDataName(name);

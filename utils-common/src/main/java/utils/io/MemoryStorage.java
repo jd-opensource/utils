@@ -88,4 +88,9 @@ public class MemoryStorage implements Storage {
 		FileUtils.writeProperties(props, out);
 		dataMap.put(name, out.toByteArray());
 	}
+
+	@Override
+	public String[] getKeyNames() {
+		return dataMap.keySet().toArray(new String[dataMap.size()]);
+	}
 }
