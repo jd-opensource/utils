@@ -7,7 +7,6 @@ import org.bouncycastle.crypto.CipherKeyGenerator;
 import org.bouncycastle.crypto.KeyGenerationParameters;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.crypto.paddings.PKCS7Padding;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
@@ -132,29 +131,39 @@ public class AESUtils {
 		}
 
 		// To get the value padded into input
-		int padding = 16 - length % BLOCK_SIZE;
-		// The plaintext with padding value
-		byte[] plainBytesWithPadding = new byte[length + padding];
-		System.arraycopy(plainBytes, offset, plainBytesWithPadding, 0, length);
-		// The padder adds PKCS7 padding to the input, which makes its length to
-		// become an integral multiple of 16 bytes
-		PKCS7Padding padder = new PKCS7Padding();
-		// To add padding
-		padder.addPadding(plainBytesWithPadding, length);
+		byte padding = getAESPadding(length);
+		int lengthWithPadding = length + padding;
+
+		// 加密的明文输入数组，有 2 部分组成：原始明文 + PKCS7填充；
+		byte[] input = new byte[lengthWithPadding];
+		System.arraycopy(plainBytes, offset, input, 0, length);
+		// PKCS7填充；
+		PKCS7PaddingUtils.addPadding(input, length, padding);
+
+		// 加密的密文输出数组，由 2 部分组成：IV + 密文；
+		byte[] output = new byte[IV_SIZE + lengthWithPadding];
+
+		// The IV locates on the first block of ciphertext
+		System.arraycopy(iv, 0, output, 0, IV_SIZE);
 
 		CBCBlockCipher encryptor = new CBCBlockCipher(new AESEngine());
 		// To provide key and initialisation vector as input
 		encryptor.init(true, new ParametersWithIV(new KeyParameter(secretKey), iv));
-		byte[] output = new byte[plainBytesWithPadding.length + IV_SIZE];
+
 		// To encrypt the input_p in CBC mode
-		int blockCount = plainBytesWithPadding.length / BLOCK_SIZE;
+		int blockCount = lengthWithPadding / BLOCK_SIZE;
+		int blockOffset;
+
 		for (int i = 0; i < blockCount; i++) {
-			encryptor.processBlock(plainBytesWithPadding, i * BLOCK_SIZE, output, (i + 1) * BLOCK_SIZE);
+			blockOffset = i * BLOCK_SIZE;
+			encryptor.processBlock(input, blockOffset, output, IV_SIZE + blockOffset);
 		}
 
-		// The IV locates on the first block of ciphertext
-		System.arraycopy(iv, 0, output, 0, BLOCK_SIZE);
 		return output;
+	}
+
+	public static byte getAESPadding(int dataLength) {
+		return (byte) (16 - dataLength % BLOCK_SIZE);
 	}
 
 	/**
@@ -218,8 +227,9 @@ public class AESUtils {
 		decryptor.init(false, new ParametersWithIV(new KeyParameter(secretKey), iv));
 		byte[] outputWithPadding = new byte[length - BLOCK_SIZE];
 		// To decrypt the input in CBC mode
-		for (int i = 1; i < length / BLOCK_SIZE; i++) {
-			decryptor.processBlock(cipherBytes, i * BLOCK_SIZE, outputWithPadding, (i - 1) * BLOCK_SIZE);
+		int blockcount = length / BLOCK_SIZE;
+		for (int i = 1; i < blockcount; i++) {
+			decryptor.processBlock(cipherBytes, offset + i * BLOCK_SIZE, outputWithPadding, (i - 1) * BLOCK_SIZE);
 		}
 
 		int p = outputWithPadding[outputWithPadding.length - 1];
