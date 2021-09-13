@@ -30,7 +30,7 @@ public class ECDSAUtils {
 
 	// p = 2^256 - 2^32 - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1
 	// the curve equation is y^2 = x^3 + 7.
-	private static final ECNamedCurveParameterSpec PARAMS = ECNamedCurveTable.getParameterSpec("secp256k1");
+	private static final ECNamedCurveParameterSpec PARAMS = ECNamedCurveTable.getParameterSpec("secp256r1");
 	private static final ECCurve CURVE = PARAMS.getCurve();
 	public static final ECDomainParameters DOMAIN_PARAMS = new ECDomainParameters(CURVE, PARAMS.getG(), PARAMS.getN(),
 			PARAMS.getH());
