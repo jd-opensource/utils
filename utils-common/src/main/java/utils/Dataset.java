@@ -40,6 +40,14 @@ public interface Dataset<K, V> {
 	long setValue(K key, V value, long version);
 
 	/**
+	 * Set key value without version
+	 * @param key     The key of data;
+	 * @param value   The value of data;
+	 * @return
+	 */
+	long setValue(K key, V value);
+
+	/**
 	 * Return the specified version's value;<br>
 	 * 
 	 * If the key with the specified version doesn't exist, then return null;<br>
