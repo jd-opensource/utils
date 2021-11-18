@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 public class CommandConsole {
@@ -125,8 +123,7 @@ public class CommandConsole {
 					defaultProcessor.onEnter(cmd, args, this);
 				}
 			} catch (Exception e) {
-				out.println("Error!!--" + e.getMessage());
-				logger.error(e.getMessage(), e);
+				e.printStackTrace(out);
 			}
 		}
 	}
@@ -137,5 +134,4 @@ public class CommandConsole {
 	public synchronized void close() {
 		monitoring = false;
 	}
-	private Logger logger = LoggerFactory.getLogger(CommandConsole.class);
 }

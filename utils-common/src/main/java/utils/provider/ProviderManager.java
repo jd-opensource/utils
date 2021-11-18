@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The ProviderManager manages all serivce providers in the system.
  * <p>
@@ -34,8 +31,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class ProviderManager {
-
-	private final Logger LOGGER = LoggerFactory.getLogger(ProviderManager.class);
 
 	private final Object mutex = new Object();
 
@@ -104,8 +99,7 @@ public final class ProviderManager {
 	/**
 	 * @author huanghaiquan
 	 *
-	 * @param <T>
-	 *            Type of Service
+	 * @param <S> Type of Service
 	 */
 	private class NamedProviders<S> {
 
@@ -153,7 +147,6 @@ public final class ProviderManager {
 		private synchronized boolean install(S service) {
 			String fullName = service.getClass().getName();
 			if (namedProviders.containsKey(fullName)) {
-				LOGGER.warn(String.format("The provider[%s] already exists.", fullName));
 				return false;
 			}
 			String shortName = null;
