@@ -102,10 +102,10 @@ public class SSLSecurity {
         if (!StringUtils.isEmpty(keyStore) && !StringUtils.isEmpty(trustStore)) {
             return SSLMode.TWO_WAY;
         }
-        if (isClient && StringUtils.isEmpty(keyStore)) {
+        if (isClient && !StringUtils.isEmpty(trustStore)) {
             return SSLMode.ONE_WAY;
         }
-        if (!isClient && StringUtils.isEmpty(trustStore)) {
+        if (!isClient && !StringUtils.isEmpty(keyStore)) {
             return SSLMode.ONE_WAY;
         }
         return SSLMode.OFF;
