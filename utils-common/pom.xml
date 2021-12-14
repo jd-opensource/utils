@@ -52,23 +52,6 @@
 			<groupId>org.bitbucket.mstrobel</groupId>
 			<artifactId>procyon-compilertools</artifactId>
 		</dependency>
-
-		<!-- log dependency for test -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<scope>test</scope>
-		</dependency>
 		
 		
 		<!-- 在测试阶段引入 Guava 库做性能对比测试 -->
