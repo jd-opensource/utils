@@ -2,38 +2,46 @@ package utils.net;
 
 import utils.StringUtils;
 
+import java.util.Arrays;
+
 /**
  * @description: SSL连接配置
  * @author: imuge
  * @date: 2021/11/10
  **/
 public class SSLSecurity {
-    // keystore 类型
-    private String keyStoreType;
-    // keystore 路径
+
+    private static final String DEFAULT_KEY_STORE_TYPE = "PKCS12";
+    private static final String DEFAULT_TRUST_STORE_TYPE = "JKS";
+    private static final String DEFAULT_PROTOCOL = "TLS";
+
+    private String keyStoreType = DEFAULT_KEY_STORE_TYPE;
     private String keyStore;
-    // key别名
     private String keyAlias;
-    // 密码
     private String keyStorePassword;
-    // 信任库路径
     private String trustStore;
-    // 信任库密码
     private String trustStorePassword;
-    // 信任库类型
-    private String trustStoreType;
+    private String trustStoreType = DEFAULT_TRUST_STORE_TYPE;
+    private String protocol = DEFAULT_PROTOCOL;
+    private String[] enabledProtocols;
+    private String[] ciphers;
 
     public SSLSecurity() {
     }
 
-    public SSLSecurity(String keyStoreType, String keyStore, String keyAlias, String keyStorePassword, String trustStore, String trustStorePassword, String trustStoreType) {
-        this.keyStoreType = keyStoreType;
+    public SSLSecurity(String keyStoreType, String keyStore, String keyAlias, String keyStorePassword,
+                       String trustStore, String trustStorePassword, String trustStoreType,
+                       String protocol, String enabledProtocols, String ciphers) {
+        this.keyStoreType = StringUtils.isEmpty(keyStoreType) ? DEFAULT_KEY_STORE_TYPE : keyStoreType;
         this.keyStore = keyStore;
         this.keyAlias = keyAlias;
         this.keyStorePassword = keyStorePassword;
         this.trustStore = trustStore;
         this.trustStorePassword = trustStorePassword;
-        this.trustStoreType = trustStoreType;
+        this.trustStoreType = StringUtils.isEmpty(trustStoreType) ? DEFAULT_TRUST_STORE_TYPE : trustStoreType;
+        this.protocol = StringUtils.isEmpty(protocol) ? DEFAULT_PROTOCOL : protocol;
+        this.enabledProtocols = StringUtils.isEmpty(enabledProtocols) ? null : enabledProtocols.split(",");
+        this.ciphers = StringUtils.isEmpty(ciphers) ? null : ciphers.split(",");
     }
 
     public String getTrustStoreType() {
@@ -92,6 +100,30 @@ public class SSLSecurity {
         this.trustStorePassword = trustStorePassword;
     }
 
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String[] getEnabledProtocols() {
+        return enabledProtocols;
+    }
+
+    public void setEnabledProtocols(String[] enabledProtocols) {
+        this.enabledProtocols = enabledProtocols;
+    }
+
+    public String[] getCiphers() {
+        return ciphers;
+    }
+
+    public void setCiphers(String[] ciphers) {
+        this.ciphers = ciphers;
+    }
+
     /**
      * 认证模式，分客户端和服务端
      *
@@ -114,13 +146,16 @@ public class SSLSecurity {
     @Override
     public String toString() {
         return "SSLSecurity{" +
-                ", keyStoreType='" + keyStoreType + '\'' +
+                "keyStoreType='" + keyStoreType + '\'' +
                 ", keyStore='" + keyStore + '\'' +
                 ", keyAlias='" + keyAlias + '\'' +
                 ", keyStorePassword='" + keyStorePassword + '\'' +
                 ", trustStore='" + trustStore + '\'' +
                 ", trustStorePassword='" + trustStorePassword + '\'' +
                 ", trustStoreType='" + trustStoreType + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", enabledProtocols=" + Arrays.toString(enabledProtocols) +
+                ", ciphers=" + Arrays.toString(ciphers) +
                 '}';
     }
 }
