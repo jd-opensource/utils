@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.Scanner;
 
 import utils.io.ByteArray;
 import utils.io.RuntimeIOException;
@@ -31,8 +33,12 @@ public class ConsoleUtils {
 	}
 
 	public static String confirm(String fmt, Object... args) {
-		Console cs = getConsole();
-		return cs.readLine(fmt, args);
+		Console cs = System.console();
+		if(cs != null){
+			return cs.readLine();
+		}
+		Scanner scanner = new Scanner(new InputStreamReader(System.in, Charset.defaultCharset()));
+		return scanner.nextLine().trim();
 	}
 
 	public static Console getConsole() {
