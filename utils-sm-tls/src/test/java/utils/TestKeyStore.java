@@ -34,7 +34,7 @@ public class TestKeyStore {
         X509Certificate rootCACert = SmCertMarker.createRootCACert(rootKeyPair, rootCaDN, expire);
         X509Certificate middleCACert = SmCertMarker.createMiddleCACert(rootKeyPair, rootCaDN, middleCaDN, middleKeyPair, expire);
 
-        CertsHelper.buildNodeSMCerts(rootCACert, middleCACert, middleKeyPair, "node0-test", "node", "12345678", new File("D:\\block160\\cert\\"), null);
+        CertsHelper.makeSMCerts(rootCACert, middleCACert, middleKeyPair, "node0-test", "node", "12345678", new File("D:\\block160\\cert\\"), null);
 
 
     }

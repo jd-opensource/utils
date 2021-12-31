@@ -70,13 +70,13 @@ public final class CertsHelper {
     }
 
 
-    public static void buildSMCaTestCerts(File smHomeDir,
-                                          int nodes,
-                                          int gws,
-                                          int users,
-                                          long expire,
-                                          String password,
-                                          Map<ASN1ObjectIdentifier, String> subjectDNMap) throws Exception {
+    public static void makeSMCaTestCerts(File smHomeDir,
+                                         int nodes,
+                                         int gws,
+                                         int users,
+                                         long expire,
+                                         String password,
+                                         Map<ASN1ObjectIdentifier, String> subjectDNMap) throws Exception {
 
         KeyPair rootKeyPair = SM2Util.generateKeyPair();
         X500Name rootCaDN = CertsHelper.buildCertDN(
@@ -123,29 +123,29 @@ public final class CertsHelper {
         };
 
         for (int i = 0; i < nodes; i++) {
-            CertsHelper.buildNodeSMCerts(rootCACert, middleCACert, middleKeyPair, "node" + i, "node", password, smHomeDir, certificateConsumer);
+            CertsHelper.makeSMCerts(rootCACert, middleCACert, middleKeyPair, "node" + i, "node", password, smHomeDir, certificateConsumer);
         }
 
         for (int i = 0; i < gws; i++) {
-            CertsHelper.buildNodeSMCerts(rootCACert, middleCACert, middleKeyPair, "gw" + i, "gw", password, smHomeDir, certificateConsumer);
+            CertsHelper.makeSMCerts(rootCACert, middleCACert, middleKeyPair, "gw" + i, "gw", password, smHomeDir, certificateConsumer);
         }
 
         for (int i = 0; i < users; i++) {
-            CertsHelper.buildNodeSMCerts(rootCACert, middleCACert, middleKeyPair, "user" + i, "user", password, smHomeDir, certificateConsumer);
+            CertsHelper.makeSMCerts(rootCACert, middleCACert, middleKeyPair, "user" + i, "user", password, smHomeDir, certificateConsumer);
         }
 
         trustKeyStore.store(new FileOutputStream(new File(smHomeDir, "client.jks")), password.toCharArray());
 
     }
 
-    public static void buildNodeSMCerts(X509Certificate rootCa,
-                                        X509Certificate middleCa,
-                                        KeyPair middleCaKeyPair,
-                                        String nodeCommonName,
-                                        String nodeOUName,
-                                        String password,
-                                        File outputPathDir,
-                                        BiConsumer<String, X509Certificate> certificateConsumer
+    public static void makeSMCerts(X509Certificate rootCa,
+                                   X509Certificate middleCa,
+                                   KeyPair middleCaKeyPair,
+                                   String commonName,
+                                   String ouName,
+                                   String password,
+                                   File outputPathDir,
+                                   BiConsumer<String, X509Certificate> certificateConsumer
     ) throws Exception {
 
         KeyPair sigKeyPair = SM2Util.generateKeyPair();
@@ -161,8 +161,8 @@ public final class CertsHelper {
         String email = getValue(middleCaX509Principal, BCStyle.EmailAddress);
 
         X500Name middleCaDN = CertsHelper.buildCertDN(country, org, unit, cn, province, locality, email);
-        X500Name signDN = CertsHelper.buildCertDN(country, org, nodeOUName, nodeCommonName, province, locality, email);
-        X500Name encDN = CertsHelper.buildCertDN(country, org, nodeOUName, nodeCommonName, province, locality, email);
+        X500Name signDN = CertsHelper.buildCertDN(country, org, ouName, commonName, province, locality, email);
+        X500Name encDN = CertsHelper.buildCertDN(country, org, ouName, commonName, province, locality, email);
 
         Date expireDate = rootCa.getNotAfter();
         long expire = expireDate.getTime() - System.currentTimeMillis();
@@ -170,7 +170,7 @@ public final class CertsHelper {
         X509Certificate signCert = SmCertMarker.createEntitySignCert(middleCaKeyPair, middleCaDN, signDN, sigKeyPair, expire);
         X509Certificate encCert = SmCertMarker.createEntityEncCert(middleCaKeyPair, middleCaDN, encDN, encKeyPair, expire);
 
-        File zipFile = new File(outputPathDir, "sm2." + nodeCommonName + ".zip");
+        File zipFile = new File(outputPathDir, "sm2." + commonName + ".zip");
 
         KeyStore signKeyStore = KeyStore.getInstance("pkcs12");
         signKeyStore.load(null, null);
@@ -203,45 +203,45 @@ public final class CertsHelper {
             zipOutputStream.write(certToPem(middleCa));
 
             //sign
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.key.pem", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.key.pem", commonName)));
             zipOutputStream.write(keyToPem(sigKeyPair.getPrivate()));
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.cert.pem", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.cert.pem", commonName)));
             zipOutputStream.write(certToPem(signCert));
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.cert.cer", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.cert.cer", commonName)));
             zipOutputStream.write(signCert.getEncoded());
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.key", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.key", commonName)));
             zipOutputStream.write(sigKeyPair.getPrivate().getEncoded());
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.pfx", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.sign.pfx", commonName)));
             signKeyStore.store(zipOutputStream, password.toCharArray());
 
             //enc
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.key.pem", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.key.pem", commonName)));
             zipOutputStream.write(keyToPem(encKeyPair.getPrivate()));
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.cert.pem", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.cert.pem", commonName)));
             zipOutputStream.write(certToPem(encCert));
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.cert.cer", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.cert.cer", commonName)));
             zipOutputStream.write(encCert.getEncoded());
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.key", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.key", commonName)));
             zipOutputStream.write(encKeyPair.getPrivate().getEncoded());
 
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.pfx", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.enc.pfx", commonName)));
             encKeyStore.store(zipOutputStream, password.toCharArray());
 
             //both
-            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.both.pfx", nodeCommonName)));
+            zipOutputStream.putNextEntry(new ZipEntry(String.format("sm2.%s.both.pfx", commonName)));
             bothStore.store(zipOutputStream, password.toCharArray());
         }
 
         if (certificateConsumer != null) {
-            certificateConsumer.accept(nodeCommonName + "-enc", encCert);
-            certificateConsumer.accept(nodeCommonName + "-sig", signCert);
+            certificateConsumer.accept(commonName + "-enc", encCert);
+            certificateConsumer.accept(commonName + "-sig", signCert);
         }
 
     }
