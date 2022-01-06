@@ -54,6 +54,13 @@ public class FixedBytesSliceArray implements BytesSlices {
 		return new BytesSlice(dataBytes, dataOffset + idx * itemSize, itemSize);
 	}
 
+	public BytesSlice getDataSlice(int idx, int length) {
+		if (idx < 0 || idx >= itemCount) {
+			throw new IllegalArgumentException("The specified idx is out of bound!");
+		}
+		return new BytesSlice(dataBytes, dataOffset + idx * itemSize, length);
+	}
+
 	public static FixedBytesSliceArray resolve(BytesInputStream bytesStream, int itemSize) {
 		int p1 = bytesStream.getPosition();
 
