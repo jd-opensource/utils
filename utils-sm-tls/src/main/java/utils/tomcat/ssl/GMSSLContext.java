@@ -47,8 +47,8 @@ class GMSSLContext implements SSLContext {
     public SSLEngine createSSLEngine() {
         SSLEngine engine = context.createSSLEngine();
 
-        engine.setEnabledCipherSuites("ECC_SM4_GCM_SM3".split(","));
-        engine.setEnabledProtocols("GMSSLv1.1".split(","));
+        engine.setEnabledCipherSuites(GmSSLProvider.ENABLE_CIPHERS);
+        engine.setEnabledProtocols(GmSSLProvider.ENABLE_PROTOCOLS);
 
         return engine;
     }

@@ -1,6 +1,7 @@
 package utils;
 
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.junit.Test;
 import utils.certs.CertsHelper;
@@ -8,12 +9,12 @@ import utils.certs.SM2Util;
 import utils.certs.SmCertMarker;
 
 import java.io.*;
-import java.security.KeyPair;
-import java.security.KeyStore;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPrivateKey;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -37,6 +38,37 @@ public class TestKeyStore {
         CertsHelper.makeSMCerts(rootCACert, middleCACert, middleKeyPair, "node0-test", "node", "12345678", new File("D:\\block160\\cert\\"), null);
 
 
+    }
+
+
+
+    @Test
+    public void test2() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        Reader rdr = new StringReader ("-----BEGIN EC PRIVATE KEY-----\n" +
+                "MHcCAQEEIDKUSKEYvC+k26wLANwtPmwOt924/roFm6WNhlYDsjctoAoGCCqGSM49\n" +
+                "AwEHoUQDQgAEENJktkqh39rmWotI3TMBKJaNDcZbzfce6JZM+MD0SPKipaegxDnL\n" +
+                "2O22WSHjS5T71lT5Aqh/dJnSPV3wgXuAaA==\n" +
+                "-----END EC PRIVATE KEY-----");
+        Object parsed = new org.bouncycastle.openssl.PEMParser(rdr).readObject();
+        KeyPair pair = new org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter().getKeyPair((org.bouncycastle.openssl.PEMKeyPair)parsed);
+
+        PrivateKey privateKey = pair.getPrivate();
+
+        System.out.println(privateKey);
+
+        CertificateFactory instance = CertificateFactory.getInstance("X.509");
+        Certificate certificate = instance.generateCertificate(new FileInputStream("D:\\block160\\keys\\certs\\peer0.crt"));
+
+
+        System.out.println(certificate);
+
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(null,null);
+        keyStore.setKeyEntry("node0", privateKey, "123456".toCharArray(), new Certificate[]{certificate});
+
+        keyStore.store(new FileOutputStream("D:\\block160\\keys\\certs\\peer0.keystore"), "123456".toCharArray());
     }
 
 
