@@ -9,12 +9,9 @@ import java.security.Security;
 /*
  *
  * GM SSL 支持以下工具包:
- *  a. gmssl.cn开源版。 商业版参考: https://www.gmssl.cn
- *  b. https://gitee.com/openeuler/bgmprovider  该工具包仅在openjdk下使用
- *
- *  使用gmssl.cn开源版(lib/gmssl_provider-gmsslcn.jar)时，协议配置为 GMSSLv1.1
- *  使用bgmprovider(lib/gmssl_provider-bgmprovider.jar.jar)时，协议配置为 GMTLS
- *  使用bgmprovider-gmsslv1.1(lib/gmssl_provider-bgmprovider-gmsslv1.1.jar.jar)时, 协议配置为 GMSSLv1.1
+ *  a. https://gitee.com/openeuler/bgmprovider  该工具包仅在openjdk下使用。
+ *    Oracle JDK需要校验jar包签名，
+ *    如需在Oracle JDK下使用，请参考: https://www.oracle.com/java/technologies/javase/getcodesigningcertificate.html 申请JAR包签名
  */
 
 public class GmSSLProvider {
@@ -24,16 +21,16 @@ public class GmSSLProvider {
     public static final String ECC_SM4_CBC_SM_3 = "ECC_SM4_CBC_SM3";
     public static final String[] ENABLE_CIPHERS = new String[]{ECC_SM4_CBC_SM_3};
 
-    public static final String[] JCE_PROVIDERS = new String[]{"cn.gmssl.jce.provider.GMJCE", "org.bouncycastle.jce.provider.BouncyCastleProvider"};
-    public static final String[] JSSE_PROVIDERS = new String[]{"cn.gmssl.jsse.provider.GMJSSE", "org.openeuler.BGMProvider"};
-    public static final String[] GM_PROTOCOLS = new String[]{"GMSSLv1.1", "GMTLS"};
+    public static final String[] JCE_PROVIDERS = new String[]{"org.bouncycastle.jce.provider.BouncyCastleProvider"};
+    public static final String[] JSSE_PROVIDERS = new String[]{"org.openeuler.BGMProvider"};
+    public static final String[] GM_PROTOCOLS = new String[]{"GMTLS"};
 
-    protected static final Provider JSSE_PROVIDER;
-    protected static final Provider JCE_PROVIDER;
+    protected static  Provider JSSE_PROVIDER;
+    protected static  Provider JCE_PROVIDER;
 
-    public static final String GM_PROVIDER;
-    public static final String GMTLS;
-    public static final String[] ENABLE_PROTOCOLS;
+    public static  String GM_PROVIDER;
+    public static  String GMTLS;
+    public static  String[] ENABLE_PROTOCOLS;
 
     static {
         try {
@@ -51,7 +48,7 @@ public class GmSSLProvider {
             ENABLE_PROTOCOLS = new String[]{GMTLS};
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            LOGGER.error("init GMSSL error", e);
         }
     }
 
@@ -74,7 +71,7 @@ public class GmSSLProvider {
 
 
     public static boolean isGMSSL(String protocol) {
-        return GMTLS != null && GMTLS.equals(protocol);
+        return JSSE_PROVIDER != null && JCE_PROVIDER != null && GMTLS != null && GMTLS.equals(protocol);
     }
 
     public static boolean supportGMSSL(String sslEnabled, String protocol) {
