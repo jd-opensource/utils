@@ -16,12 +16,13 @@ import javax.net.ssl.X509TrustManager;
 
 import com.google.common.io.Resources;
 import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import org.apache.tomcat.util.net.SSLContext;
 import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLUtilBase;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.res.StringManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.GmSSLProvider;
 
 
@@ -37,7 +38,8 @@ import utils.GmSSLProvider;
 public class GMUtil extends SSLUtilBase {
     public static final boolean DEBUG = false;
 
-    private static final Log log = LogFactory.getLog(GMUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GMUtil.class);
+
     private static final StringManager sm = StringManager.getManager(GMUtil.class);
 
     private static final Set<String> implementedProtocols;
@@ -73,7 +75,7 @@ public class GMUtil extends SSLUtilBase {
             String protocolUpper = protocol.toUpperCase(Locale.ENGLISH);
             if (!"SSLV2HELLO".equals(protocolUpper) && !"SSLV3".equals(protocolUpper)) {
                 if (protocolUpper.contains("SSL")) {
-                    log.debug(sm.getString("jsse.excludeProtocol", protocol));
+                    LOGGER.debug(sm.getString("jsse.excludeProtocol", protocol));
                     continue;
                 }
             }
@@ -81,7 +83,7 @@ public class GMUtil extends SSLUtilBase {
         }
 
         if (implementedProtocols.size() == 0) {
-            log.warn(sm.getString("jsse.noDefaultProtocols"));
+            LOGGER.warn(sm.getString("jsse.noDefaultProtocols"));
         }
 
         String[] implementedCipherSuiteArray = context.getSupportedSSLParameters().getCipherSuites();
@@ -107,10 +109,7 @@ public class GMUtil extends SSLUtilBase {
     }
 
 
-    @Override
-    protected Log getLog() {
-        return log;
-    }
+
 
     @Override
     public KeyManager[] getKeyManagers() throws Exception {
@@ -155,7 +154,7 @@ public class GMUtil extends SSLUtilBase {
                 System.out.println("xxx pfx size=" + pfx.size());
 
             if (pfx != null) {
-                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509", "GMJSSE");
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509", GmSSLProvider.GM_PROVIDER);
                 keyManagerFactory.init(pfx, keystorePass.toCharArray());
                 keyManagers = keyManagerFactory.getKeyManagers();
             }
@@ -222,7 +221,7 @@ public class GMUtil extends SSLUtilBase {
         for (int i = 0; i < ss.length; i++) {
             ss2[i] = ss[i];
         }
-        ss2[ss.length] = "GMSSLv1.1";
+        ss2[ss.length] = GmSSLProvider.GMTLS;
         ss2[ss.length + 1] = "TLSv1.2";
 
         if (GMUtil.DEBUG) {
@@ -311,6 +310,105 @@ public class GMUtil extends SSLUtilBase {
             throws Exception {
         return new GMSSLContext(sslHostConfig.getSslProtocol());
     }
+
+
+
+    @Override
+    protected Log getLog() {
+        return new Log() {
+            @Override
+            public boolean isDebugEnabled() {
+                return LOGGER.isDebugEnabled();
+            }
+
+            @Override
+            public boolean isErrorEnabled() {
+                return LOGGER.isErrorEnabled();
+            }
+
+            @Override
+            public boolean isFatalEnabled() {
+                return LOGGER.isErrorEnabled();
+            }
+
+            @Override
+            public boolean isInfoEnabled() {
+                return LOGGER.isInfoEnabled();
+            }
+
+            @Override
+            public boolean isTraceEnabled() {
+                return LOGGER.isTraceEnabled();
+            }
+
+            @Override
+            public boolean isWarnEnabled() {
+                return LOGGER.isWarnEnabled();
+            }
+
+            @Override
+            public void trace(Object message) {
+                LOGGER.trace(String.valueOf(message));
+            }
+
+            @Override
+            public void trace(Object message, Throwable t) {
+                LOGGER.trace(String.valueOf(message), t);
+            }
+
+            @Override
+            public void debug(Object message) {
+                LOGGER.debug(String.valueOf(message));
+            }
+
+            @Override
+            public void debug(Object message, Throwable t) {
+                LOGGER.debug(String.valueOf(message), t);
+            }
+
+            @Override
+            public void info(Object message) {
+                LOGGER.info(String.valueOf(message));
+            }
+
+            @Override
+            public void info(Object message, Throwable t) {
+                LOGGER.info(String.valueOf(message), t);
+            }
+
+            @Override
+            public void warn(Object message) {
+                LOGGER.warn(String.valueOf(message));
+            }
+
+            @Override
+            public void warn(Object message, Throwable t) {
+                LOGGER.warn(String.valueOf(message), t);
+            }
+
+            @Override
+            public void error(Object message) {
+                LOGGER.error(String.valueOf(message));
+            }
+
+            @Override
+            public void error(Object message, Throwable t) {
+                LOGGER.error(String.valueOf(message), t);
+            }
+
+            @Override
+            public void fatal(Object message) {
+                LOGGER.error(String.valueOf(message));
+            }
+
+            @Override
+            public void fatal(Object message, Throwable t) {
+                LOGGER.error(String.valueOf(message), t);
+            }
+        };
+    }
+
+
 }
 
 class GMTrustManager extends X509ExtendedTrustManager {
@@ -353,6 +451,8 @@ class GMTrustManager extends X509ExtendedTrustManager {
     public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
             throws CertificateException {
     }
+
+
 
 }
 

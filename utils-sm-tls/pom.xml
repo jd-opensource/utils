@@ -25,22 +25,6 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.gmssl</groupId>
-            <artifactId>gmssl_ah</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/gmssl_ah-1.0-SNAPSHOT.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.gmssl</groupId>
-            <artifactId>gmssl_provider</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/gmssl_provider.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -64,6 +48,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.jd.utils</groupId>
+            <artifactId>gmssl_provider</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/gmssl_provider.jar</systemPath>
+        </dependency>
+
+
 
     </dependencies>
 

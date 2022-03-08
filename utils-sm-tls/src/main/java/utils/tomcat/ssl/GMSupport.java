@@ -1,11 +1,11 @@
 package utils.tomcat.ssl;
 
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import org.apache.tomcat.util.net.SSLSessionManager;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.res.StringManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLSession;
 import java.io.ByteArrayInputStream;
@@ -18,7 +18,8 @@ import java.util.Map;
 
 
 public class GMSupport implements SSLSupport, SSLSessionManager {
-    private static final Log log = LogFactory.getLog(GMSupport.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GMSupport.class);
 
     private static final StringManager sm = StringManager.getManager(GMSupport.class);
 
@@ -54,8 +55,7 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
         if (session == null) {
             return null;
         }
-        String rs = session.getCipherSuite();
-        return rs;
+        return session.getCipherSuite();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
         try {
             certs = session.getPeerCertificates();
         } catch (Throwable t) {
-            log.debug(sm.getString("jsseSupport.clientCertError"), t);
+            LOGGER.debug(sm.getString("jsseSupport.clientCertError"), t);
             return null;
         }
         if (certs == null) {
@@ -92,13 +92,13 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
                     x509Certs[i] = (X509Certificate)
                             cf.generateCertificate(stream);
                 } catch (Exception ex) {
-                    log.info(sm.getString(
+                    LOGGER.info(sm.getString(
                             "jsseSupport.certTranslationError", certs[i]), ex);
                     return null;
                 }
             }
-            if (log.isTraceEnabled()) {
-                log.trace("Cert #" + i + " = " + x509Certs[i]);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Cert #" + i + " = " + x509Certs[i]);
             }
         }
         if (x509Certs.length < 1) {
@@ -179,7 +179,6 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
     }
 
     public String getRequestedProtocols() throws IOException {
-        // TODO Auto-generated method stub
         if (session == null) {
             if (GMUtil.DEBUG) {
                 System.out.println("getProtocol=null");
@@ -194,13 +193,11 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
     }
 
     public String getRequestedCiphers() throws IOException {
-        // TODO Auto-generated method stub
         // Look up the current SSLSession
         if (session == null) {
             return null;
         }
-        String rs = session.getCipherSuite();
-        return rs;
+        return session.getCipherSuite();
     }
 }
 
