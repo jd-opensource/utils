@@ -14,6 +14,7 @@ public class SSLSecurity {
     private static final String DEFAULT_KEY_STORE_TYPE = "PKCS12";
     private static final String DEFAULT_TRUST_STORE_TYPE = "JKS";
     private static final String DEFAULT_PROTOCOL = "TLS";
+    public static final String DEFAULT_HOST_NAME_VERIFIER = "NO-OP";
 
     private String keyStoreType = DEFAULT_KEY_STORE_TYPE;
     private String keyStore;
@@ -25,6 +26,7 @@ public class SSLSecurity {
     private String protocol = DEFAULT_PROTOCOL;
     private String[] enabledProtocols;
     private String[] ciphers;
+    private String hostNameVerifier = DEFAULT_HOST_NAME_VERIFIER;
 
     public SSLSecurity() {
     }
@@ -43,6 +45,14 @@ public class SSLSecurity {
         this.enabledProtocols = StringUtils.isEmpty(enabledProtocols) ? null : enabledProtocols.split(",");
         this.ciphers = StringUtils.isEmpty(ciphers) ? null : ciphers.split(",");
     }
+
+    public SSLSecurity(String keyStoreType, String keyStore, String keyAlias, String keyStorePassword,
+                       String trustStore, String trustStorePassword, String trustStoreType,
+                       String protocol, String enabledProtocols, String ciphers, String hostNameVerifier) {
+        this(keyStoreType, keyStore, keyAlias, keyStorePassword, trustStore, trustStorePassword, trustStoreType, protocol, enabledProtocols, ciphers);
+        this.hostNameVerifier = hostNameVerifier == null || "".equals(hostNameVerifier) ? DEFAULT_HOST_NAME_VERIFIER : hostNameVerifier;
+    }
+
 
     public String getTrustStoreType() {
         return trustStoreType;
@@ -143,6 +153,19 @@ public class SSLSecurity {
         return SSLMode.OFF;
     }
 
+
+    public boolean isNoopHostnameVerifier() {
+        return DEFAULT_HOST_NAME_VERIFIER.equals(this.hostNameVerifier);
+    }
+
+    public String getHostNameVerifier() {
+        return hostNameVerifier;
+    }
+
+    public void setHostNameVerifier(String hostNameVerifier) {
+        this.hostNameVerifier = hostNameVerifier;
+    }
+
     @Override
     public String toString() {
         return "SSLSecurity{" +
@@ -156,6 +179,7 @@ public class SSLSecurity {
                 ", protocol='" + protocol + '\'' +
                 ", enabledProtocols=" + Arrays.toString(enabledProtocols) +
                 ", ciphers=" + Arrays.toString(ciphers) +
+                ", hostNameVerifier='" + hostNameVerifier + '\'' +
                 '}';
     }
 }
