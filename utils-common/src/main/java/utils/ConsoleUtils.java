@@ -35,8 +35,9 @@ public class ConsoleUtils {
 	public static String confirm(String fmt, Object... args) {
 		Console cs = System.console();
 		if(cs != null){
-			return cs.readLine();
+			return cs.readLine(fmt, args);
 		}
+		System.out.printf(fmt, args);
 		Scanner scanner = new Scanner(new InputStreamReader(System.in, Charset.defaultCharset()));
 		return scanner.nextLine().trim();
 	}

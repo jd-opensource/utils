@@ -4,8 +4,6 @@ import org.apache.tomcat.util.net.SSLSessionManager;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.res.StringManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLSession;
 import java.io.ByteArrayInputStream;
@@ -18,8 +16,6 @@ import java.util.Map;
 
 
 public class GMSupport implements SSLSupport, SSLSessionManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GMSupport.class);
 
     private static final StringManager sm = StringManager.getManager(GMSupport.class);
 
@@ -69,7 +65,6 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
         try {
             certs = session.getPeerCertificates();
         } catch (Throwable t) {
-            LOGGER.debug(sm.getString("jsseSupport.clientCertError"), t);
             return null;
         }
         if (certs == null) {
@@ -92,13 +87,8 @@ public class GMSupport implements SSLSupport, SSLSessionManager {
                     x509Certs[i] = (X509Certificate)
                             cf.generateCertificate(stream);
                 } catch (Exception ex) {
-                    LOGGER.info(sm.getString(
-                            "jsseSupport.certTranslationError", certs[i]), ex);
                     return null;
                 }
-            }
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Cert #" + i + " = " + x509Certs[i]);
             }
         }
         if (x509Certs.length < 1) {

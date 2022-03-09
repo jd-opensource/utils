@@ -21,8 +21,6 @@ import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLUtilBase;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.res.StringManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.GmSSLProvider;
 
 
@@ -37,8 +35,6 @@ import utils.GmSSLProvider;
  */
 public class GMUtil extends SSLUtilBase {
     public static final boolean DEBUG = false;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GMUtil.class);
 
     private static final StringManager sm = StringManager.getManager(GMUtil.class);
 
@@ -75,15 +71,10 @@ public class GMUtil extends SSLUtilBase {
             String protocolUpper = protocol.toUpperCase(Locale.ENGLISH);
             if (!"SSLV2HELLO".equals(protocolUpper) && !"SSLV3".equals(protocolUpper)) {
                 if (protocolUpper.contains("SSL")) {
-                    LOGGER.debug(sm.getString("jsse.excludeProtocol", protocol));
                     continue;
                 }
             }
             implementedProtocols.add(protocol);
-        }
-
-        if (implementedProtocols.size() == 0) {
-            LOGGER.warn(sm.getString("jsse.noDefaultProtocols"));
         }
 
         String[] implementedCipherSuiteArray = context.getSupportedSSLParameters().getCipherSuites();
@@ -318,92 +309,92 @@ public class GMUtil extends SSLUtilBase {
         return new Log() {
             @Override
             public boolean isDebugEnabled() {
-                return LOGGER.isDebugEnabled();
+                return false;
             }
 
             @Override
             public boolean isErrorEnabled() {
-                return LOGGER.isErrorEnabled();
+                return false;
             }
 
             @Override
             public boolean isFatalEnabled() {
-                return LOGGER.isErrorEnabled();
+                return false;
             }
 
             @Override
             public boolean isInfoEnabled() {
-                return LOGGER.isInfoEnabled();
+                return false;
             }
 
             @Override
             public boolean isTraceEnabled() {
-                return LOGGER.isTraceEnabled();
+                return false;
             }
 
             @Override
             public boolean isWarnEnabled() {
-                return LOGGER.isWarnEnabled();
+                return false;
             }
 
             @Override
             public void trace(Object message) {
-                LOGGER.trace(String.valueOf(message));
+
             }
 
             @Override
             public void trace(Object message, Throwable t) {
-                LOGGER.trace(String.valueOf(message), t);
+
             }
 
             @Override
             public void debug(Object message) {
-                LOGGER.debug(String.valueOf(message));
+
             }
 
             @Override
             public void debug(Object message, Throwable t) {
-                LOGGER.debug(String.valueOf(message), t);
+
             }
 
             @Override
             public void info(Object message) {
-                LOGGER.info(String.valueOf(message));
+
             }
 
             @Override
             public void info(Object message, Throwable t) {
-                LOGGER.info(String.valueOf(message), t);
+
             }
 
             @Override
             public void warn(Object message) {
-                LOGGER.warn(String.valueOf(message));
+
             }
 
             @Override
             public void warn(Object message, Throwable t) {
-                LOGGER.warn(String.valueOf(message), t);
+
             }
 
             @Override
             public void error(Object message) {
-                LOGGER.error(String.valueOf(message));
+
             }
 
             @Override
             public void error(Object message, Throwable t) {
-                LOGGER.error(String.valueOf(message), t);
+
             }
 
             @Override
             public void fatal(Object message) {
-                LOGGER.error(String.valueOf(message));
+
             }
 
             @Override
             public void fatal(Object message, Throwable t) {
-                LOGGER.error(String.valueOf(message), t);
+
             }
         };
     }

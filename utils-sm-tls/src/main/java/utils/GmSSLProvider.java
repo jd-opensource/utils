@@ -1,8 +1,5 @@
 package utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.security.Provider;
 import java.security.Security;
 
@@ -15,8 +12,6 @@ import java.security.Security;
  */
 
 public class GmSSLProvider {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GmSSLProvider.class);
 
     public static final String ECC_SM4_CBC_SM_3 = "ECC_SM4_CBC_SM3";
     public static final String[] ENABLE_CIPHERS = new String[]{ECC_SM4_CBC_SM_3};
@@ -37,25 +32,19 @@ public class GmSSLProvider {
             Class jsseProviderClass = findJSSEProvider();
             Class jceProviderClass = findJCEProvider();
 
-            LOGGER.info("find jsse provider: {}", jsseProviderClass);
-            LOGGER.info("find jce provider: {}", jceProviderClass);
-
             JCE_PROVIDER = jceProviderClass != null ? (Provider) jceProviderClass.newInstance() : null;
             JSSE_PROVIDER = jsseProviderClass != null ? (Provider) jsseProviderClass.newInstance() : null;
             GM_PROVIDER = JSSE_PROVIDER != null ? JSSE_PROVIDER.getName() : null;
             GMTLS = findGMProtocol(JSSE_PROVIDER);
-            LOGGER.info("find tls protocol: {}", GMTLS);
             ENABLE_PROTOCOLS = new String[]{GMTLS};
 
         } catch (Exception e) {
-            LOGGER.error("init GMSSL error", e);
         }
     }
 
 
     public static void enableGMSupport(String protocol) {
         if (isGMSSL(protocol)) {
-            LOGGER.info("enable gm protocol: {}", protocol);
             loadGMProvider();
         }
     }
@@ -65,7 +54,6 @@ public class GmSSLProvider {
             Security.insertProviderAt(JSSE_PROVIDER, 1);
             Security.insertProviderAt(JCE_PROVIDER, 2);
         } catch (Exception e) {
-            LOGGER.error("enable sm tls error", e);
         }
     }
 
@@ -85,7 +73,6 @@ public class GmSSLProvider {
             try {
                 return Class.forName(provider);
             } catch (ClassNotFoundException e) {
-                LOGGER.debug("not found provider: " + provider);
             }
         }
 
@@ -98,7 +85,6 @@ public class GmSSLProvider {
             try {
                 return Class.forName(provider);
             } catch (ClassNotFoundException e) {
-                LOGGER.debug("not found provider: " + provider);
             }
         }
 

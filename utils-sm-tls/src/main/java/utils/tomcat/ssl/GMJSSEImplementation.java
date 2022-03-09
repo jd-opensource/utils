@@ -29,8 +29,6 @@ import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.SSLUtil;
 import org.apache.tomcat.util.net.jsse.JSSEImplementation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.GmSSLProvider;
 
 import javax.net.ssl.SSLSession;
@@ -42,8 +40,6 @@ import java.util.*;
  * JSSEImplementation support GMTLS
  */
 public class GMJSSEImplementation extends JSSEImplementation {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GMJSSEImplementation.class);
 
     // GM TLS protocol version
     private static final String GM_PROTOCOL = GmSSLProvider.GMTLS;
@@ -159,7 +155,6 @@ public class GMJSSEImplementation extends JSSEImplementation {
             field.setAccessible(true);
             explicitlyRequestedProtocols = (Set<String>) field.get(sslHostConfig);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            LOGGER.warn("The explicitlyRequestedProtocols field is not defined in the SSLHostConfig class.");
             explicitlyRequestedProtocols = new HashSet<>();
         }
         return explicitlyRequestedProtocols;
@@ -184,7 +179,6 @@ public class GMJSSEImplementation extends JSSEImplementation {
         String ciphers = sslHostConfig.getCiphers();
         Set<String> gmCiphers = parseCiphers(ciphers);
         sslHostConfig.getJsseCipherNames().addAll(gmCiphers);
-        LOGGER.info("gmCiphers = " + gmCiphers);
     }
 
     /**
@@ -198,7 +192,6 @@ public class GMJSSEImplementation extends JSSEImplementation {
             parseCipher(element, gmCiphers, removedCiphers);
         }
         gmCiphers.removeAll(removedCiphers);
-        LOGGER.info("Remove cipher suites : " + removedCiphers);
         return gmCiphers;
     }
 
@@ -220,16 +213,13 @@ public class GMJSSEImplementation extends JSSEImplementation {
         if (ALIAS_MAP.containsKey(element)) {
             List<String> aliasCiphers = ALIAS_MAP.get(element);
             gmCiphers.addAll(aliasCiphers);
-            LOGGER.info("Add cipher suites : " + aliasCiphers);
         } else if (element.equals(HIGH) || element.equals(ALL)) {
             gmCiphers.addAll(GM_CIPHERS_NAME_SET);
-            LOGGER.info("Add cipher suites :" + GM_CIPHERS_NAME_SET);
         } else if (element.startsWith(DELETE)) {
             String alias = element.substring(1);
             if (ALIAS_MAP.containsKey(alias)) {
                 List<String> aliasCiphers = ALIAS_MAP.get(alias);
                 aliasCiphers.forEach(gmCiphers::remove);
-                LOGGER.info("Remove cipher suites : " + aliasCiphers);
             }
         } else if (element.startsWith(EXCLUDE)) {
             String alias = element.substring(1);
