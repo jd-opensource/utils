@@ -3,6 +3,7 @@ package utils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.junit.Ignore;
 import org.junit.Test;
 import utils.certs.CertsHelper;
 import utils.certs.SM2Util;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 public class TestKeyStore {
 
+    @Ignore
     @Test
     public void testBuildCertZipFile() throws Exception {
 
@@ -40,8 +42,7 @@ public class TestKeyStore {
 
     }
 
-
-
+    @Ignore
     @Test
     public void test2() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
@@ -71,7 +72,7 @@ public class TestKeyStore {
         keyStore.store(new FileOutputStream("D:\\block160\\keys\\certs\\peer0.keystore"), "123456".toCharArray());
     }
 
-
+    @Ignore
     @Test
     public void testCert() throws Exception {
 
@@ -138,6 +139,7 @@ public class TestKeyStore {
 
     }
 
+    @Ignore
     @Test
     public void testPemLoad() throws IOException, CertificateException {
 
@@ -152,7 +154,7 @@ public class TestKeyStore {
 
     }
 
-
+    @Ignore
     @Test
     public void test() throws Exception {
 
