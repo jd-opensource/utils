@@ -92,4 +92,6 @@ public interface Dataset<K, V> {
 	 */
 	DataEntry<K, V> getDataEntry(K key, long version);
 
+	DataEntry<K, V>[] getDataEntries(long fromIndex, int count);
+
 }
