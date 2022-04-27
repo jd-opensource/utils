@@ -1,4 +1,4 @@
-package utils;
+package utils.crypto.sm;
 
 import java.security.Provider;
 import java.security.Security;

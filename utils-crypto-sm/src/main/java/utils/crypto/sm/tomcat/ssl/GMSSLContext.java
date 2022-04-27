@@ -1,8 +1,8 @@
-package utils.tomcat.ssl;
+package utils.crypto.sm.tomcat.ssl;
 
 
 import org.apache.tomcat.util.net.SSLContext;
-import utils.GmSSLProvider;
+import utils.crypto.sm.GmSSLProvider;
 
 import javax.net.ssl.*;
 import java.security.KeyManagementException;

@@ -20,5 +20,21 @@
 			<artifactId>utils-crypto-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>9.0.56</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jd.utils</groupId>
+			<artifactId>gmssl_provider</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/gmssl_provider.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>
