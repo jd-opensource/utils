@@ -1,18 +1,4 @@
-package utils.tomcat.ssl;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
-import java.security.KeyStore;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509ExtendedTrustManager;
-import javax.net.ssl.X509TrustManager;
+package utils.crypto.sm.tomcat.ssl;
 
 import com.google.common.io.Resources;
 import org.apache.juli.logging.Log;
@@ -21,7 +7,16 @@ import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLUtilBase;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.res.StringManager;
-import utils.GmSSLProvider;
+import utils.crypto.sm.GmSSLProvider;
+
+import javax.net.ssl.*;
+import java.io.InputStream;
+import java.net.Socket;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
 
 /**
@@ -98,8 +93,6 @@ public class GMUtil extends SSLUtilBase {
         super(certificate, warnOnSkip);
         conf = certificate;
     }
-
-
 
 
     @Override
@@ -303,7 +296,6 @@ public class GMUtil extends SSLUtilBase {
     }
 
 
-
     @Override
     protected Log getLog() {
         return new Log() {
@@ -442,7 +434,6 @@ class GMTrustManager extends X509ExtendedTrustManager {
     public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
             throws CertificateException {
     }
-
 
 
 }

@@ -22,14 +22,14 @@
  * information or have any questions.
  */
 
-package utils.tomcat.ssl;
+package utils.crypto.sm.tomcat.ssl;
 
 import org.apache.tomcat.util.net.SSLHostConfig;
 import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.SSLUtil;
 import org.apache.tomcat.util.net.jsse.JSSEImplementation;
-import utils.GmSSLProvider;
+import utils.crypto.sm.GmSSLProvider;
 
 import javax.net.ssl.SSLSession;
 import java.lang.reflect.Field;
@@ -120,7 +120,7 @@ public class GMJSSEImplementation extends JSSEImplementation {
             aliasCiphers.add(gmCipher.cipherName);
         }
     }
-    
+
     public GMJSSEImplementation() {
         super();
     }
