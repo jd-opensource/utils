@@ -18,10 +18,11 @@
 		<module>utils-crypto-base</module>
 		<module>utils-crypto-classic</module>
 		<module>utils-crypto-sm</module>
+		<module>utils-crypto-adv</module>
 		<module>utils-serialize</module>
 		<module>utils-web-server</module>
 		<module>utils-test</module>
-	</modules>
+    </modules>
 
 	<dependencies>
 		<dependency>
