@@ -1,4 +1,4 @@
-package utils.crypto.adv;
+package utils.crypto.adv.paillier;
 
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 

@@ -1,6 +1,9 @@
 package utils.crypto.adv;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import utils.crypto.adv.paillier.PaillierKeyPairGenerator;
+import utils.crypto.adv.paillier.PaillierPrivateKeyParameters;
+import utils.crypto.adv.paillier.PaillierPublicKeyParameters;
 import utils.crypto.classic.SHA256SecureRandom;
 import utils.io.BytesUtils;
 

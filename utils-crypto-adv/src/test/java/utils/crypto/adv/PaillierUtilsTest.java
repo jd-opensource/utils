@@ -2,6 +2,8 @@ package utils.crypto.adv;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.junit.Test;
+import utils.crypto.adv.paillier.PaillierPrivateKeyParameters;
+import utils.crypto.adv.paillier.PaillierPublicKeyParameters;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
