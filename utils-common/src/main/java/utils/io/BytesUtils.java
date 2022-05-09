@@ -458,13 +458,13 @@ public class BytesUtils {
 	 */
 	public static int toInt(byte[] bytes) {
 		int length = bytes.length;
-		byte[] buffer = new byte[4];
-		if (length <= buffer.length){
-			System.arraycopy(bytes,0,buffer,buffer.length - length,length);
+		if(length < 4) {
+			byte[] buffer = new byte[4];
+			System.arraycopy(bytes, 0, buffer, buffer.length - length, length);
+			return toInt(buffer, 0);
 		} else {
-			System.arraycopy(bytes,length - buffer.length,buffer,0, buffer.length);
+			return toInt(bytes, 0);
 		}
-		return toInt(buffer, 0);
 		// value = (value | (bytes[0] & 0xFF)) << 8;
 		// value = (value | (bytes[1] & 0xFF)) << 8;
 		// value = (value | (bytes[2] & 0xFF)) << 8;
