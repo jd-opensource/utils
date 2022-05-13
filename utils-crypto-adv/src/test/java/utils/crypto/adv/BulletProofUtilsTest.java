@@ -12,6 +12,7 @@ import utils.crypto.adv.bulletproof.algebra.Secp256k1;
 import utils.crypto.adv.bulletproof.commitments.PeddersenCommitment;
 import utils.crypto.adv.bulletproof.linearalgebra.GeneratorVector;
 import utils.crypto.adv.bulletproof.rangeproof.RangeProof;
+import utils.serialize.json.JSONSerializeUtils;
 
 import java.math.BigInteger;
 
@@ -34,6 +35,17 @@ public class BulletProofUtilsTest {
         GroupElement commitment = BulletProofUtils.generateCommitment(parameters, number, randomness);
         PeddersenCommitment witness = BulletProofUtils.generateWitness(parameters, number, randomness);
         RangeProof proof = BulletProofUtils.generateProof(parameters, commitment, witness);
+
+        // commitment serialize/deserialize
+        String commitmentJson = JSONSerializeUtils.serializeToJSON(commitment);
+        System.out.println(commitmentJson);
+        commitment = JSONSerializeUtils.deserializeFromJSON(commitmentJson, GroupElement.class);
+
+        // proof serialize/deserialize
+        String proofJson = JSONSerializeUtils.serializeToJSON(proof);
+        System.out.println(proofJson);
+        proof = JSONSerializeUtils.deserializeFromJSON(proofJson, RangeProof.class);
+
         Assert.assertTrue(BulletProofUtils.verify(parameters, commitment, proof));
     }
 
@@ -44,6 +56,17 @@ public class BulletProofUtilsTest {
         VectorX witness = BulletProofUtils.generateWitness(parameters, values);
         GeneratorVector commitments = BulletProofUtils.generateCommitments(curve, witness);
         RangeProof proof = BulletProofUtils.generateProof(parameters, commitments, witness);
+
+        // commitments serialize/deserialize
+        String commitmentsJson = JSONSerializeUtils.serializeToJSON(commitments);
+        System.out.println(commitmentsJson);
+        commitments = JSONSerializeUtils.deserializeFromJSON(commitmentsJson, GeneratorVector.class);
+
+        // proof serialize/deserialize
+        String proofJson = JSONSerializeUtils.serializeToJSON(proof);
+        System.out.println(proofJson);
+        proof = JSONSerializeUtils.deserializeFromJSON(proofJson, RangeProof.class);
+
         Assert.assertTrue(BulletProofUtils.verify(parameters, commitments, proof));
     }
 }

@@ -6,9 +6,9 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 public class BN128Point implements GroupElement<BN128Point> {
-    private final ECPoint point;
+    protected final ECPoint point;
 
-    BN128Point(ECPoint point) {
+    public BN128Point(ECPoint point) {
         this.point = point;
     }
 

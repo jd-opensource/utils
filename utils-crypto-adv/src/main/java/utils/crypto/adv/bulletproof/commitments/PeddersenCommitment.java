@@ -25,6 +25,13 @@ public class PeddersenCommitment<T extends GroupElement<T>> implements Homomorph
         this(base, x, ProofUtils.randomNumber());
     }
 
+    public PeddersenCommitment(T commitment, BigInteger x, BigInteger r) {
+        this.base = null;
+        this.commitment = commitment;
+        this.x = x;
+        this.r = r;
+    }
+
     @Override
     public <C2 extends PeddersenCommitment<T>> PeddersenCommitment<T> add(C2 other) {
         return new PeddersenCommitment<>(base, x.add(other.getX()), r.add(other.getR()));

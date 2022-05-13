@@ -9,7 +9,7 @@ public class BouncyCastleECPoint implements GroupElement<BouncyCastleECPoint> {
     public static int addCount = 0;
     protected final ECPoint point;
 
-    BouncyCastleECPoint(ECPoint point) {
+    public BouncyCastleECPoint(ECPoint point) {
         this.point = point;
     }
 
