@@ -22,9 +22,11 @@ public class GeneratorVectorDeserializer implements ObjectDeserializer {
         if (type instanceof Class && GeneratorVector.class.isAssignableFrom((Class<?>) type)) {
 
             JSONArray vector = parser.parseObject().getJSONArray("vector");
-            GroupElement t1 = JSONSerializeUtils.deserializeFromJSON(vector.getString(0), GroupElement.class);
-            GroupElement t2 = JSONSerializeUtils.deserializeFromJSON(vector.getString(1), GroupElement.class);
-            return (T) new GeneratorVector(VectorX.of((BouncyCastleECPoint) t1, (BouncyCastleECPoint) t2), new Secp256k1());
+            BouncyCastleECPoint[] ts = new BouncyCastleECPoint[vector.size()];
+            for (int i = 0; i < vector.size(); i++) {
+                ts[i] = (BouncyCastleECPoint) JSONSerializeUtils.deserializeFromJSON(vector.getString(i), GroupElement.class);
+            }
+            return (T) new GeneratorVector(VectorX.of(ts), new Secp256k1());
         }
         return (T) parser.parse(fieldName);
     }
