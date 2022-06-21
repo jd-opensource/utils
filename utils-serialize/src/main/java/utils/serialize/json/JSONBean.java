@@ -16,6 +16,7 @@ import static com.alibaba.fastjson.util.TypeUtils.castToTimestamp;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -327,13 +328,13 @@ public class JSONBean {
 	public java.sql.Date getSqlDate(String key) {
 		Object value = get(key);
 
-		return castToSqlDate(value);
+		return (java.sql.Date) castToSqlDate(value);
 	}
 
 	public java.sql.Timestamp getTimestamp(String key) {
 		Object value = get(key);
 
-		return castToTimestamp(value);
+		return (Timestamp) castToTimestamp(value);
 	}
 	
 	@Override
