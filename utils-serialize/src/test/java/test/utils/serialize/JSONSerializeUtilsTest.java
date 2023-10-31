@@ -10,7 +10,9 @@ import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.UUID;
 
+import org.json.JSONException;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -22,6 +24,16 @@ import utils.serialize.json.JSONSerializeUtils;
 import utils.serialize.json.JSONString;
 
 public class JSONSerializeUtilsTest {
+	/**
+	 * 检测JSON类型的String，但不要求顺序一致
+	 */
+    public void assertJsonEqualsNonStrict(String json1, String json2) {
+        try {
+            JSONAssert.assertEquals(json1, json2, false);
+        } catch (JSONException jse) {
+            throw new IllegalArgumentException(jse.getMessage());
+        }
+    }
 
 	/**
 	 * 测试基于接口类型的序列化和反序列化；<p>
@@ -249,9 +261,9 @@ public class JSONSerializeUtilsTest {
 		assertEquals(carJSON, carJSON1);
 
 		String carString = JSON.parseObject(carJSON, String.class);
-		assertEquals(carJSON, carString);
+		assertJsonEqualsNonStrict(carJSON, carString);
 		String carString2 = JSONSerializeUtils.deserializeAs(carJSON, String.class);
-		assertEquals(carJSON, carString2);
+		assertJsonEqualsNonStrict(carJSON, carString2);
 	}
 
 	@Test
@@ -269,7 +281,7 @@ public class JSONSerializeUtilsTest {
 		System.out.println("2:--\r\n" + newJSONString);
 
 		JSONString newJSONString2 = JSONSerializeUtils.deserializeAs(newJSONString, JSONString.class);
-		assertEquals(carJSON, newJSONString2.toString());
+		assertJsonEqualsNonStrict(carJSON, newJSONString2.toString());
 
 		String address = UUID.randomUUID().toString();
 		JSONString jsonAddress = new JSONString(JSONSerializeUtils.serializeToJSON(address));
